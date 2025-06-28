@@ -1,0 +1,26 @@
+#!/bin/bash
+
+flameshot gui
+
+CLIPBOARD=$(xclip -o -selection clipboard)
+
+if [ -f "$CLIPBOARD" ]; then
+    LOCAL_FILE="$CLIPBOARD"
+    REMOTE_DIR="/var/www/scrn.rene-roscher.de/scrn"
+    SERVER="root@5.75.131.140"
+    URL_PREFIX="https://scrn.rene-roscher.de/"
+
+    HASH=$(sha256sum "$LOCAL_FILE" | awk '{print $1}' | cut -c1-12)
+    EXT="${LOCAL_FILE##*.}"
+    REMOTE_NAME="${HASH}.${EXT}"
+
+    rsync -avz "$LOCAL_FILE" "$SERVER:$REMOTE_DIR/$REMOTE_NAME"
+
+    URL="${URL_PREFIX}${REMOTE_NAME}"
+
+    echo "$URL" | xclip -selection clipboard
+
+    notify-send "Upload erfolgreich" "Die Datei wurde hochgeladen: $URL"
+else
+    notify-send "Fehler" "Kein gültiger Screenshot gefunden."
+fi

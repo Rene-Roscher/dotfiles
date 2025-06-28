@@ -1,0 +1,28 @@
+#!/bin/bash
+
+CLIPBOARD=$(xclip -o -selection clipboard)
+
+if [ -f "$CLIPBOARD" ]; then
+    LOCAL_FILE="$CLIPBOARD"
+    REMOTE_DIR="/var/www/scrn.rene-roscher.de/scrn"
+    SERVER="root@5.75.131.140"
+    URL_PREFIX="https://scrn.rene-roscher.de/"
+
+    HASH=$(sha256sum "$LOCAL_FILE" | awk '{print $1}' | cut -c1-12)
+    FILE_EXT="${LOCAL_FILE##*.}"
+    NEW_FILE_NAME="${HASH}.${FILE_EXT}"
+    NEW_LOCAL_PATH="/tmp/$NEW_FILE_NAME"
+
+    cp "$LOCAL_FILE" "$NEW_LOCAL_PATH"
+
+    rsync -avz "$NEW_LOCAL_PATH" "$SERVER:$REMOTE_DIR"
+
+    URL="$URL_PREFIX$NEW_FILE_NAME"
+
+    echo "$URL" | xclip -selection clipboard
+
+    notify-send "Upload erfolgreich" "Die Datei wurde hochgeladen: $URL"
+    rm "$NEW_LOCAL_PATH"
+else
+    notify-send "Fehler" "Kein gültiger Datei-Pfad in der Zwischenablage gefunden."
+fi
