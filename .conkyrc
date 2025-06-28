@@ -1,0 +1,25 @@
+conky.config = {
+    alignment = 'top_right',
+    background = false,
+    double_buffer = true,
+    font = 'monospace:size=9',
+    gap_x = 20,
+    gap_y = 45,
+    minimum_width = 200, minimum_height = 5,
+    own_window = true,
+    own_window_type = 'desktop',
+    own_window_transparent = true,
+    own_window_argb_visual = true,
+    own_window_argb_value = 0,
+    own_window_hints = 'undecorated,sticky,skip_taskbar,skip_pager,above',
+    update_interval = 1.0,
+    draw_shades = false,
+    draw_outline = false,
+    draw_borders = false,
+    draw_graph_borders = false,
+    use_xft = true,
+};
+
+conky.text = [[
+CPU: ${cpu cpu0}%  RAM: $memperc%  CPU-Temp: ${execi 5 sensors | grep 'Tctl:' | awk '{print $2}'}  GPU/NVMe: ${execi 5 sensors | grep -A 2 'nvme-pci-0100' | grep 'Composite:' | awk '{print $2}'}
+]];
