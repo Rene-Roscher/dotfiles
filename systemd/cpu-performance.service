@@ -1,0 +1,13 @@
+[Unit]
+Description=CPU Performance Optimization
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/cpupower frequency-set -g performance
+ExecStart=/bin/bash -c 'for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do echo 4426171 > "\$cpu"; done'
+ExecStart=/bin/bash -c 'powerprofilesctl set balanced 2>/dev/null || true'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
