@@ -1,0 +1,13 @@
+[Unit]
+Description=WiFi Performance Optimization
+After=network.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'sleep 5'
+ExecStart=/sbin/iwconfig wlp5s0 power off
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
